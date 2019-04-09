@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="bookorder1" name="Zamówienie książki" isExecutable="true">
+    <startEvent id="sid-D365DFA5-FE24-49AA-87DE-6E92EA0B87DA" activiti:initiator="initiator"></startEvent>
+    <scriptTask id="sid-BE983AF8-9BB5-4CDB-9EC1-7C45C68A2FA8" name="Zatwierdź zamówienie" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>isvalidisbn = (isbn &gt; 10) &amp;&amp; (isbn &lt; 1000) ? true : false
+execution.setVariable('isvalidisbn', isvalidisbn)</script>
+    </scriptTask>
+    <userTask id="sid-EB3131A8-2119-4F4F-87E5-89B38359F5B7" name="Opracuj zamówienie" activiti:candidateGroups="sales">
+      <extensionElements>
+        <activiti:formProperty id="new_property_1" name="ISBN" type="long" variable="isbn" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_2" name="Imię" type="string" variable="imie" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_3" name="Nazwisko" type="string" variable="nazwisko" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="new_property_4" name="Uwagi" type="string" variable="uwagi" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="data_dostawy" name="Data dostawy" type="date" datePattern="MM-dd-yyyy hh:mm"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <endEvent id="end_event"></endEvent>
+    <sequenceFlow id="sid-C87E7410-554B-4A5F-BC9B-C9FB7141BD70" sourceRef="sid-EB3131A8-2119-4F4F-87E5-89B38359F5B7" targetRef="end_event"></sequenceFlow>
+    <userTask id="sid-99B2C18B-39AD-4DFD-87AB-092348C6FD91" name="Wprowadź zamówienie" activiti:assignee="${initiator}">
+      <extensionElements>
+        <activiti:formProperty id="isbn" name="ISBN" type="long" required="true"></activiti:formProperty>
+        <activiti:formProperty id="imie" name="Imię" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nazwisko" name="Nazwisko" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="uwagi" name="Uwagi" type="string"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-7C2356C7-EB9F-4A20-B5C9-26A4AC97EC9D" sourceRef="sid-D365DFA5-FE24-49AA-87DE-6E92EA0B87DA" targetRef="sid-99B2C18B-39AD-4DFD-87AB-092348C6FD91"></sequenceFlow>
+    <sequenceFlow id="sid-AE1AE7EA-6CBA-489F-8577-EAA840CEAE3E" sourceRef="sid-99B2C18B-39AD-4DFD-87AB-092348C6FD91" targetRef="sid-BE983AF8-9BB5-4CDB-9EC1-7C45C68A2FA8"></sequenceFlow>
+    <exclusiveGateway id="sid-037E38C0-9280-415A-8A83-931FCA34ABAF"></exclusiveGateway>
+    <sequenceFlow id="sid-F7A4C73A-86C5-45A0-BDCB-60293A5F0864" sourceRef="sid-BE983AF8-9BB5-4CDB-9EC1-7C45C68A2FA8" targetRef="sid-037E38C0-9280-415A-8A83-931FCA34ABAF"></sequenceFlow>
+    <sequenceFlow id="sid-FD702BA9-521A-4033-BD7C-05F7B74ACE61" sourceRef="sid-037E38C0-9280-415A-8A83-931FCA34ABAF" targetRef="sid-EB3131A8-2119-4F4F-87E5-89B38359F5B7">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isvalidisbn}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-A13564A3-9343-4AE6-BC6F-88CE72930803" sourceRef="sid-037E38C0-9280-415A-8A83-931FCA34ABAF" targetRef="end_event1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!isvalidisbn}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="end_event1" name="Zły numer ISBN">
+      <terminateEventDefinition></terminateEventDefinition>
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_bookorder1">
+    <bpmndi:BPMNPlane bpmnElement="bookorder1" id="BPMNPlane_bookorder1">
+      <bpmndi:BPMNShape bpmnElement="sid-D365DFA5-FE24-49AA-87DE-6E92EA0B87DA" id="BPMNShape_sid-D365DFA5-FE24-49AA-87DE-6E92EA0B87DA">
+        <omgdc:Bounds height="30.0" width="30.0" x="60.0" y="105.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-BE983AF8-9BB5-4CDB-9EC1-7C45C68A2FA8" id="BPMNShape_sid-BE983AF8-9BB5-4CDB-9EC1-7C45C68A2FA8">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-EB3131A8-2119-4F4F-87E5-89B38359F5B7" id="BPMNShape_sid-EB3131A8-2119-4F4F-87E5-89B38359F5B7">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end_event" id="BPMNShape_end_event">
+        <omgdc:Bounds height="28.0" width="28.0" x="856.0" y="106.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-99B2C18B-39AD-4DFD-87AB-092348C6FD91" id="BPMNShape_sid-99B2C18B-39AD-4DFD-87AB-092348C6FD91">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="75.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-037E38C0-9280-415A-8A83-931FCA34ABAF" id="BPMNShape_sid-037E38C0-9280-415A-8A83-931FCA34ABAF">
+        <omgdc:Bounds height="40.0" width="40.0" x="501.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end_event1" id="BPMNShape_end_event1">
+        <omgdc:Bounds height="28.0" width="28.0" x="507.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-7C2356C7-EB9F-4A20-B5C9-26A4AC97EC9D" id="BPMNEdge_sid-7C2356C7-EB9F-4A20-B5C9-26A4AC97EC9D">
+        <omgdi:waypoint x="90.0" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="127.5" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="127.5" y="115.0"></omgdi:waypoint>
+        <omgdi:waypoint x="165.0" y="115.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FD702BA9-521A-4033-BD7C-05F7B74ACE61" id="BPMNEdge_sid-FD702BA9-521A-4033-BD7C-05F7B74ACE61">
+        <omgdi:waypoint x="540.5549132947976" y="120.44508670520231"></omgdi:waypoint>
+        <omgdi:waypoint x="645.0" y="120.14409221902017"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-F7A4C73A-86C5-45A0-BDCB-60293A5F0864" id="BPMNEdge_sid-F7A4C73A-86C5-45A0-BDCB-60293A5F0864">
+        <omgdi:waypoint x="415.0" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="501.0" y="120.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AE1AE7EA-6CBA-489F-8577-EAA840CEAE3E" id="BPMNEdge_sid-AE1AE7EA-6CBA-489F-8577-EAA840CEAE3E">
+        <omgdi:waypoint x="265.0" y="115.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="115.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="315.0" y="120.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C87E7410-554B-4A5F-BC9B-C9FB7141BD70" id="BPMNEdge_sid-C87E7410-554B-4A5F-BC9B-C9FB7141BD70">
+        <omgdi:waypoint x="745.0" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="856.0" y="120.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-A13564A3-9343-4AE6-BC6F-88CE72930803" id="BPMNEdge_sid-A13564A3-9343-4AE6-BC6F-88CE72930803">
+        <omgdi:waypoint x="521.4358108108108" y="139.5641891891892"></omgdi:waypoint>
+        <omgdi:waypoint x="521.047137779945" y="255.000079356307"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
